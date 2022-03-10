@@ -2,9 +2,9 @@ namespace :dev do
   desc "Setting development environment"
   task setup: :environment do
 
-    puts "Rewinding the database..."
-    %x(rails db:drop db:create db:migrate)
-    puts "Rewinded database successfuly!"
+    # puts "Rewinding the database..."
+    # %x(rails db:drop db:create db:migrate)
+    # puts "Rewinded database successfuly!"
 
     puts "Registering contacts types..."
     kinds = %w(Amigo Comercial Conhecido)

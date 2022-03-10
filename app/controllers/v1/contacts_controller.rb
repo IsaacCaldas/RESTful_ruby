@@ -19,7 +19,7 @@ module V1
      end
 
     def show
-      render json: @contact, include: [:kind, :address, :phones] #, meta: { author: "Jackson Pires" }   #, include: [:kind, :phones, :address]
+      render json: @contact #, meta: { author: "Jackson Pires" }   #, include: [:kind, :phones, :address]
     end
 
     def create
