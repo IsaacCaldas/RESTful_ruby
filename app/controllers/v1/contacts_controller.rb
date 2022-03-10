@@ -1,5 +1,6 @@
 module V1
   class ContactsController < ApplicationController
+    include ErrorSerializer
 
     before_action :set_contact, only: [:show, :update, :destroy]
 
@@ -8,11 +9,17 @@ module V1
       per_page = params[:page].try(:[], :size)
 
       @contacts = Contact.all.page(page_number).per(per_page)
-      render  json: @contacts
+
+      # Cache-Control: expires_in 30.seconds, public: true
+      
+      if stale?(etag: @contacts)    
+        render  json: @contacts 
+      end
+      # without e-tag: render  json: @contacts
      end
 
     def show
-      render json: @contact, include: [:kind, :address, :phones] #, meta: { author: "Jackson Pires" }   #, include: [:kind, :phones, :address]
+      render json: @contact #, meta: { author: "Jackson Pires" }   #, include: [:kind, :phones, :address]
     end
 
     def create
@@ -21,7 +28,7 @@ module V1
       if @contact.save
         render json: @contact, include: [:kind, :phones, :address], status: :created, location: @contact
       else
-        render json: @contact.errors, status: :unprocessable_entity
+        render json: ErrorSerializer.serialize(@contact.errors) # @contact.errors, status: :unprocessable_entity
       end
     end
 
